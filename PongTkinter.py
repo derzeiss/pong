@@ -1,6 +1,5 @@
 import random
 import sys
-import time
 import tkinter
 
 
@@ -336,11 +335,12 @@ class Ball:
     def render(self):
         self.game.coords(self.__canvas_item, self.__x, self.__y, self.__x + self.__width, self.__y + self.__height)
 
-    def respawn(self, dir=None):
-        if not dir: dir = random.choice((-1, 1))
+    def respawn(self, direction=None):
+        if not direction:
+            direction = random.choice((-1, 1))
         self.__x = Game.WIDTH // 2
         self.__y = Game.HEIGHT // 2
-        self.__vx = Game.BALL_SPEED_X_MIN * dir
+        self.__vx = Game.BALL_SPEED_X_MIN * direction
         self.__vy = random.randint(-Game.BALL_SPEED_Y_MAX, Game.BALL_SPEED_Y_MAX)
 
     def collides_with_object(self, obj):
