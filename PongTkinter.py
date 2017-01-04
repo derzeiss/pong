@@ -330,7 +330,6 @@ class Ball:
             self.bounce_from_player(self.game.player2)
 
     def bounce_from_player(self, player):
-        print(round(time.time()) % 100, ': bounce_from_player', sep='')
         self.__vx = -(self.vx * Game.BALL_ACC)
         self.__vy = (self.__y - player.y) / player.height * Game.BALL_SPEED_Y_MAX - Game.BALL_SPEED_Y_MAX // 2
 
