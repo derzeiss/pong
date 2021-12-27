@@ -1,4 +1,4 @@
-import PongTkinter as pong
+import pong
 
 
 class BasicIntelligenceAIBar(pong.AIBar):
