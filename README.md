@@ -4,7 +4,7 @@ Pong game made in python (plus translated to typescript).
 What's special about this one is your can write your own AI quite easily.
 
 
-**Note**: This documentation is wrote for the python version. Implementing a typescript AI works nearly the same, but has some slight differences. See [Implementing a typescript AI](#implementing-a-typescript-ai) for detailed instructions.
+**Note**: This documentation is written for the python version. Implementing a typescript AI works nearly the same, but has some slight differences. See [Implementing a typescript AI](#implementing-a-typescript-ai) for detailed instructions.
 
 ## Writing your own AI
 Subclass ``AIBar`` and implement a ``handle_input `` method.
