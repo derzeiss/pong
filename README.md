@@ -1,11 +1,7 @@
 # pong
-Pong game made in python (plus translated to typescript).
+Pong game made in python.
 
 What's special about this one is your can write your own AI quite easily.
-
-
-**Note**: This documentation is written for the python version. Implementing a typescript AI works nearly the same, but has some slight differences. See [Implementing a typescript AI](#implementing-a-typescript-ai) for detailed instructions.
-
 ## Writing your own AI
 Subclass ``AIBar`` and implement a ``handle_input `` method.
 ```python
@@ -59,14 +55,6 @@ vy
 width
 height
 ````
-
-## Implementing a typescript AI
-Now you know how to implement a python AI. Implementing one in typescript works nearly the same, with only a few differences:
-- Initializing a game with a new Bar AI works the same, but is done in `~/pong.ts/src/script/index.ts`
-- All properties are getters, so instead of `self.x`, use `this.getX()`
-- There is a `this.dont_move()` method to prevent the bar from moving, even if `move_up` or `move_down` has already been called.
-- Except the getters all methods are still in `snake_case`, even though JS/TS uses `camelCase` by default.
-
 
 ## TODO
 * Correct collision when ball hits Bar on top or bottom 
