@@ -1,8 +1,7 @@
 import { BAR_WIDTH, BAR_HEIGHT, KEYS, BAR_SPEED, HEIGHT } from './config';
 import { Game } from './Game';
-import { IGameObject } from './types';
 
-export class Bar implements IGameObject {
+export class Bar {
   protected game: Game;
   private x: number;
   private y: number;
@@ -45,7 +44,7 @@ export class Bar implements IGameObject {
     return this.height;
   }
 
-  handle_input() {
+  handleInput() {
     if (this.game.is_pressed(KEYS['up'])) {
       this.moveUp();
     } else if (this.game.is_pressed(KEYS['down'])) {

@@ -1,5 +1,4 @@
-import { DEFAULT_FONT, POINTS_TO_WIN } from './config';
-import { Game } from './Game';
+import { POINTS_TO_WIN } from './config';
 
 export class Score {
   private x: number;
@@ -12,7 +11,7 @@ export class Score {
     this.score = 0;
   }
 
-  handle_input() {}
+  handleInput() {}
 
   update() {}
 

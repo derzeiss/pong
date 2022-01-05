@@ -1,10 +1,9 @@
 import { Bar } from './Bar';
-import { BALL_SIZE, HEIGHT, WIDTH, BALL_ACC, BALL_SPEED_Y_MAX, BALL_SPEED_X_MIN } from './config';
+import { BALL_ACC, BALL_SIZE, BALL_SPEED_X_MIN, BALL_SPEED_Y_MAX, HEIGHT, WIDTH } from './config';
 import { Game } from './Game';
-import { IGameObject } from './types';
 import { randint } from './util';
 
-export class Ball implements IGameObject {
+export class Ball {
   private game: Game;
   private x: number;
   private y: number;
@@ -14,6 +13,7 @@ export class Ball implements IGameObject {
   private height: number;
   private vx: number;
   private vy: number;
+  private justBounced: boolean; // true if the ball bounced last frame. Disables bar collision detection for one frame
 
   constructor(game: Game, x = 0, y = 0) {
     this.game = game;
@@ -25,6 +25,7 @@ export class Ball implements IGameObject {
     this.height = BALL_SIZE;
     this.vx = 0;
     this.vy = 0;
+    this.justBounced = false;
   }
 
   getX() {
@@ -51,7 +52,7 @@ export class Ball implements IGameObject {
     return this.height;
   }
 
-  handle_input() {}
+  handleInput() {}
 
   update() {
     // update position
@@ -60,7 +61,15 @@ export class Ball implements IGameObject {
     this.x += this.vx;
     this.y += this.vy;
 
-    // check if ball collided on top or bot -> bounce from wall
+    this.handleCollisionsWithFriendlyWalls();
+    this.handleCollisionsWithBars();
+    this.handleCollisionsWithPointyWalls();
+  }
+
+  /**
+   * Check if ball collided on top or bot -> bounce from wall
+   */
+  handleCollisionsWithFriendlyWalls() {
     if (this.y < 0) {
       // collided top
       this.y = 0;
@@ -70,8 +79,12 @@ export class Ball implements IGameObject {
       this.y = HEIGHT - this.height;
       this.vy *= -1;
     }
+  }
 
-    // check if ball hit screen bounds left or right -> score
+  /** 
+   * check if ball hit screen bounds left or right -> score
+   */
+  handleCollisionsWithPointyWalls() {
     if (0 >= this.x) {
       // collided left
       if (!this.game.scorePlayer2.addScore()) {
@@ -82,23 +95,37 @@ export class Ball implements IGameObject {
         this.respawn(-1);
       }
     }
+  }
 
-    // check if collided with bar
-    if (this.collidedWithBar(this.game.player1)) {
-      this.x = this.game.player1.getX() + this.game.player1.getWidth();
+  handleCollisionsWithBars() {
+    if (this.justBounced) {
+      this.justBounced = false;
+      return;
+    }
+
+    const p1 = this.game.player1;
+    const p1x = p1.getX() + p1.getWidth();
+    const p1y0 = p1.getY();
+    const p1y1 = p1y0 + p1.getHeight();
+
+    const p2 = this.game.player2;
+    const p2x = p2.getX() - this.width; // make left bar side collide with right ball side
+    const p2y0 = p2.getY();
+    const p2y1 = p2y0 + p2.getHeight();
+
+    if (this.collidedWithBar(p1x, p1y0, p1y1)) {
+      this.x = p1x;
       this.bounceFromPlayer(this.game.player1);
-    } else if (this.collidedWithBar(this.game.player2)) {
+    } else if (this.collidedWithBar(p2x, p2y0, p2y1)) {
       this.x = this.game.player2.getX() - this.width;
       this.bounceFromPlayer(this.game.player2);
     }
   }
 
-  collidedWithBar(bar: Bar) {
+  collidedWithBar(barX: number, barY0: number, barY1: number) {
     const averageY = (this.lastY + this.y) / 2;
-    const barX = bar.getX();
-    const barY = bar.getY();
-    if (averageY + this.height < barY) return false; // ball is over the bar
-    if (averageY > barY + bar.getHeight()) return false; // ball is beneath the bar
+    if (averageY + this.height < barY0) return false; // ball is over the bar
+    if (averageY > barY1) return false; // ball is beneath the bar
     if (Math.sign(barX - this.x) === Math.sign(barX - this.lastX)) return false; // ball didn't travel through bar last frame
     return true;
   }
@@ -106,6 +133,7 @@ export class Ball implements IGameObject {
   bounceFromPlayer(player: Bar) {
     this.vx = -(this.vx * BALL_ACC);
     this.vy = ((this.y - player.getY()) / player.getHeight()) * BALL_SPEED_Y_MAX - BALL_SPEED_Y_MAX / 2;
+    this.justBounced = true;
   }
 
   render(ctx: CanvasRenderingContext2D) {

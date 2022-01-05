@@ -1,8 +1,8 @@
-import { Bar } from "./Bar";
-import { Game } from "./Game";
+import { Bar } from './Bar';
+import { Game } from './Game';
 
 export interface IGameObject {
-  handle_input: () => void;
+  handleInput: () => void;
   update: () => void;
   render: (ctx: CanvasRenderingContext2D) => void;
 }

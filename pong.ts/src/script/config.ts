@@ -27,7 +27,7 @@ export const BALL_SPEED_Y_MAX = 10;
 export const BALL_ACC = 1.1;
 
 // Points to win a game
-export const POINTS_TO_WIN = 10;
+export const POINTS_TO_WIN = 5;
 
 // Style settings
-export const DEFAULT_FONT = '700 36px Consolas';
+export const DEFAULT_FONT = '700 36px monospace';

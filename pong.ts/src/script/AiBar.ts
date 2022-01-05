@@ -1,11 +1,7 @@
 import { Bar } from "./Bar";
 
-export class AIBar extends Bar {
-  handle_input() {}
-}
-
-export class LowIntelligenceAIBar extends AIBar {
-  handle_input() {
+export class LowIntelligenceAIBar extends Bar {
+  handleInput() {
     const ball = this.game.ball;
     const ball_center = ball.getY() + ball.getHeight() / 2;
     const self_center = this.getY() + this.getHeight() / 2;
