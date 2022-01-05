@@ -47,21 +47,21 @@ export class Bar implements IGameObject {
 
   handle_input() {
     if (this.game.is_pressed(KEYS['up'])) {
-      this.move_up();
+      this.moveUp();
     } else if (this.game.is_pressed(KEYS['down'])) {
-      this.move_down();
+      this.moveDown();
     }
   }
 
-  move_up() {
+  moveUp() {
     this.vy = -BAR_SPEED;
   }
 
-  move_down() {
+  moveDown() {
     this.vy = BAR_SPEED;
   }
 
-  dont_move() {
+  dontMove() {
     this.vy = 0;
   }
 

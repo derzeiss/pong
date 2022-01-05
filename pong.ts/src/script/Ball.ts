@@ -8,6 +8,8 @@ export class Ball implements IGameObject {
   private game: Game;
   private x: number;
   private y: number;
+  private lastX: number;
+  private lastY: number;
   private width: number;
   private height: number;
   private vx: number;
@@ -17,6 +19,8 @@ export class Ball implements IGameObject {
     this.game = game;
     this.x = x;
     this.y = y;
+    this.lastX = x;
+    this.lastY = y;
     this.width = BALL_SIZE;
     this.height = BALL_SIZE;
     this.vx = 0;
@@ -51,6 +55,8 @@ export class Ball implements IGameObject {
 
   update() {
     // update position
+    this.lastX = this.x;
+    this.lastY = this.y;
     this.x += this.vx;
     this.y += this.vy;
 
@@ -65,7 +71,7 @@ export class Ball implements IGameObject {
       this.vy *= -1;
     }
 
-    // check if ball collided on left or right -> score
+    // check if ball hit screen bounds left or right -> score
     if (0 >= this.x) {
       // collided left
       if (!this.game.scorePlayer2.addScore()) {
@@ -78,18 +84,28 @@ export class Ball implements IGameObject {
     }
 
     // check if collided with bar
-    if (this.collides_with_object(this.game.player1)) {
+    if (this.collidedWithBar(this.game.player1)) {
       this.x = this.game.player1.getX() + this.game.player1.getWidth();
-      this.bounce_from_player(this.game.player1);
-    } else if (this.collides_with_object(this.game.player2)) {
+      this.bounceFromPlayer(this.game.player1);
+    } else if (this.collidedWithBar(this.game.player2)) {
       this.x = this.game.player2.getX() - this.width;
-      this.bounce_from_player(this.game.player2);
+      this.bounceFromPlayer(this.game.player2);
     }
   }
 
-  bounce_from_player(player: Bar) {
+  collidedWithBar(bar: Bar) {
+    const averageY = (this.lastY + this.y) / 2;
+    const barX = bar.getX();
+    const barY = bar.getY();
+    if (averageY + this.height < barY) return false; // ball is over the bar
+    if (averageY > barY + bar.getHeight()) return false; // ball is beneath the bar
+    if (Math.sign(barX - this.x) === Math.sign(barX - this.lastX)) return false; // ball didn't travel through bar last frame
+    return true;
+  }
+
+  bounceFromPlayer(player: Bar) {
     this.vx = -(this.vx * BALL_ACC);
-    this.vy = ((this.y - player.getY()) / player.getHeight()) * BALL_SPEED_Y_MAX - BALL_SPEED_Y_MAX / 2
+    this.vy = ((this.y - player.getY()) / player.getHeight()) * BALL_SPEED_Y_MAX - BALL_SPEED_Y_MAX / 2;
   }
 
   render(ctx: CanvasRenderingContext2D) {
@@ -109,18 +125,5 @@ export class Ball implements IGameObject {
     this.y = HEIGHT / 2;
     this.vx = BALL_SPEED_X_MIN * direction;
     this.vy = randint(-BALL_SPEED_Y_MAX, BALL_SPEED_Y_MAX);
-  }
-
-  collides_with_object(obj: Bar) {
-    const bx = this.x;
-    const by = this.y;
-    const bw = this.width;
-    const bh = this.height;
-
-    const ox = obj.getX();
-    const oy = obj.getY();
-    const ow = obj.getWidth();
-    const oh = obj.getHeight();
-    return bx < ox + ow && by < oy + oh && ox < bx + bw && oy < by + bh;
   }
 }

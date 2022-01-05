@@ -12,9 +12,9 @@ export class LowIntelligenceAIBar extends AIBar {
     if (Math.abs(ball_center - self_center) > 5) {
       // prevent ball flickering
       if (ball_center < self_center) {
-        this.move_up();
+        this.moveUp();
       } else if (ball_center > self_center) {
-        this.move_down();
+        this.moveDown();
       }
     }
   }
